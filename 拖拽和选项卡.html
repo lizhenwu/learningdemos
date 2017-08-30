@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>无标题文档</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+        }
+        html,
+        body {
+            height: 100%;
+        }
+        .font {
+            position: relative;
+            width: 200px;
+            top: 30%;
+            left: 40%;
+            cursor: pointer;
+            font-size: 5.6rem;
+            font-family: "Vibur" cursive;
+            color: #c6e2ff;
+            animation: neon .08s ease-in-out infinite alternate;
+            user-select: none
+        }
+
+        @keyframes neon {
+            from {
+                text-shadow: 0 0 6px rgba(202, 228, 225, 0.92),
+                0 0 30px rgba(202, 228, 225, 0.34),
+                0 0 12px rgba(30, 132, 242, 0.52),
+                0 0 21px rgba(30, 132, 242, 0.92),
+                0 0 34px rgba(30, 132, 242, 0.78),
+                0 0 54px rgba(30, 132, 242, 0.92);
+            }
+            to {
+                text-shadow: 0 0 6px rgba(202, 228, 225, 0.98),
+                0 0 30px rgba(202, 228, 225, 0.42),
+                0 0 12px rgba(30, 132, 242, 0.58),
+                0 0 22px rgba(30, 132, 242, 0.84),
+                0 0 38px rgba(30, 132, 242, 0.88),
+                0 0 60px rgba(30, 132, 242, 1);
+            }
+        }
+        .tab{
+            position: relative;
+            width: 300px;
+            height: 400px;
+        }
+        ul{
+            overflow: hidden;
+        }
+        /*li设置为float之后ul的高度为0，不能撑开，解决方法：
+        1. ul overflow:hidden
+        2. li的末尾加一个元素<div style="clear:both;"></div>
+        3. ul设置固定高度
+        4. ul {float:left}
+        5. ul加伪元素 after{
+                    content:"";
+                    display:block;
+                    clear:both;
+                }
+        */
+        li{
+            border: 1px solid #000;
+            border-bottom: none;
+            float: left;
+            list-style: none;
+            padding: 5px 5px;
+            background-color: grey;
+            cursor: pointer;
+            transition: all .2s ease
+        }
+        .content{
+            margin: -1px 0 0 0 ; /*边框覆盖*/
+            border: 1px solid #000;
+            display: none;
+            width: inherit;
+            height: 300px;
+        }
+        .active{
+            display: block;
+            background-color: greenyellow
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class="font">test</div>
+    <div class="tab">
+        <ul>
+            <li class="active">选项一</li>
+            <li>选项二</li>
+            <li>选项三</li>
+            <!-- <div style="clear:both;"></div> -->
+        </ul>
+        <div class="active content">
+            <p>一一</p>
+        </div >
+        <div class="content">
+            <p>二二二</p>
+        </div >
+        <div class="content">
+            <p>三三三</p>
+        </div >
+    </div>
+    
+    <script>
+        //选项卡
+        const li = document.getElementsByTagName('li');
+        const content = document.getElementsByClassName('content');
+        for(let i =0;i<li.length;i++){
+            li[i].addEventListener('click',function(){
+                for(let j=0;j<li.length;j++){
+                    li[j].className = "";
+                    content[j].className = "content";
+                }
+                this.className = "active";
+                content[i].classList.add('active')
+            })
+        }
+
+
+
+
+        //拖拽，在拖动目标上监听移动就不能随意拖动到任意位置了，还是应该在document上监听
+
+        const state = {
+            initX: 0,
+            initY: 0,
+            X: 0,
+            Y: 0,
+            ready: false
+        }
+        function getCssNum(target, attr) {
+            return parseInt(window.getComputedStyle(target)[attr]);
+        }
+        const log = console.log.bind(console);
+        function startDrag(target) {
+            //程序开始时初始化目标位置
+            state.initX = getCssNum(target, "left");
+            state.initY = getCssNum(target, "top");
+            target.addEventListener('mousedown', function (e) {
+                target.addEventListener('mousemove',move);
+                state.ready = true;
+                state.X = e.clientX;
+                state.Y = e.clientY;
+            });
+            
+            function move(e){
+                 //判断是否要移动
+                 if (state.ready) {
+                    let toX = e.clientX - state.X,
+                        toY = e.clientY - state.Y;
+                    target.style.left = state.initX + toX + "px";
+                    target.style.top = state.initY + toY + "px";
+                    if (e.preventDefault) {
+                        e.preventDefault();
+                    }
+                }
+            }
+            //鼠标松开停止移动
+            document.addEventListener('mouseup', function () {
+                document.removeEventListener('mousemove',move)
+                state.ready = false;
+                //停止移动后更新目标位置
+                state.initX = getCssNum(target, "left");
+                state.initY = getCssNum(target, "top");
+            })
+        }
+        const target = document.querySelector('.font');
+        startDrag(target);
+        //document全局监听事件是否不好？
+    </script>
+</body>
+
+</html>
+<script>
