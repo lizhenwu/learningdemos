@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    .container{
+        margin: 0 auto;
+  width:400px;
+  height:200px;
+  overflow:hidden
+}
+.box{
+  position:relative;
+  left:0px;
+  width:400%;
+  height:inherit;
+}
+img{
+    float: left;
+    width:400px;
+    height:inherit;
+}
+img{
+    transition: all .5s ease
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="box" id="tt">
+        <img src="https://i3.mifile.cn/a4/xmad_14958834209224_inThg.jpg">
+          <img src="https://i3.mifile.cn/a4/xmad_15035852903037_MBVOC.jpg">
+          <img src="https://i3.mifile.cn/a4/xmad_15035842972816_fkMxC.jpg">
+          <img src="https://i3.mifile.cn/a4/xmad_14958834209224_inThg.jpg">
+       </div>
+      </div>
+      <button>click</button>
+</body>
+<script>
+    const box = document.querySelector('.box');
+    const cstyle = window.getComputedStyle(box);
+    let i = 0;
+
+    // setInterval(function(){
+    //     if(box.style.left == "-1200px"){
+    //         setTimeout(function(){
+    //         box.style.transition = "left 0s linear";
+    //         box.style.left = "0px";
+    //     })
+    //     }else{
+    //         box.style.transition = "left .5s ease"
+    //         box.style.left = parseInt(cstyle.left)-400+'px';
+    //     }
+        
+    // },1000)
+    function move(){
+        let leftValue = parseInt(window.getComputedStyle(box)['left']);
+        let moveValue = 0;
+        let timer = setInterval(()=>{
+            moveValue += 5;
+            if(moveValue >= 400){
+                clearInterval(timer)
+            }
+            box.style.left = `${leftValue-moveValue}px` !== "-1200px" ? `${leftValue-moveValue}px`:"0px"; 
+        },1000/60)
+    }
+    function play(){
+        setInterval(function(){
+            move();
+        },4000)
+    }
+    play()
+        
+</script>
+</html>
