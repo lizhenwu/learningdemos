@@ -6,13 +6,13 @@ define(function(){
             url = options.url,
             data = options.data || null,
             isAsync = options.isAsync || true;
-        if(!isAsync){
+        if(isAsync){
             xhr.onreadystatechange=function()
             {
             if (xhr.readyState==4 && xhr.status==200)
               {
-                  callback(xhr.responseText);
-              }
+                  return callback(xhr.responseText);
+                }
             }
         }
         if(method.toLowerCase() == 'post'){
@@ -20,8 +20,10 @@ define(function(){
             data = dataTransfer(data);
         }
         xhr.open(method,url,isAsync);
-        xhr.send(data)
-        callback(xhr.responseText)
+        xhr.send();
+        if(!isAsync){
+            callback(xhr.responseText)
+        }
     }
     const request = function(){
         if(window.XMLHttpRequest){
