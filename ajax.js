@@ -1,5 +1,19 @@
 //封装一个通用的ajax方法,requirejs模块
 define(function(){
+    const request = function(){
+        if(window.XMLHttpRequest){
+            return new XMLHttpRequest();
+        }else {
+            return new ActiveXObject('Microsoft.XMLHTTP')                                                                                                                                          
+        }
+    }
+    const dataTransfer = function(data){
+        let res = [];
+        for(let i in data){
+            res.push(`${encodeURIComponent(i)}=${encodeURIComponent(data[i])}`);
+        }
+        return res.join('&');
+    }
     const myAjax = function(options,callback){
         let xhr = request(),
             method = options.method,
@@ -25,20 +39,7 @@ define(function(){
             callback(xhr.responseText)
         }
     }
-    const request = function(){
-        if(window.XMLHttpRequest){
-            return new XMLHttpRequest();
-        }else {
-            return new ActiveXObject('Microsoft.XMLHTTP')                                                                                                                                          
-        }
-    }
-    const dataTransfer = function(data){
-        let res = [];
-        for(let i in data){
-            res.push(`${encodeURIComponent(i)}=${encodeURIComponent(data[i])}`);
-        }
-        return res.join('&');
-    }
+    
     return myAjax;
 })
 
